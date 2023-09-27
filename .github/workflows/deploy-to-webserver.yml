@@ -1,24 +1,16 @@
 name: Deploy API to WebServer
 
-env:
-  IMAGE_NAME: cabonline-ts-api
-  REGISTRY: 10.200.11.15:5000
-
 on:
   workflow_dispatch:
     inputs:
       docker_tag:
         description: 'Select Docker image tag'
         required: true
-        type: choice
-        options:
-        - foo
-        - bar
-        - baz
-      environment:
-        type: environment
-        description: Select the environment
-  
+
+env:
+  IMAGE_NAME: cabonline-ts-api
+  REGISTRY: 10.200.11.15:5000
+
 jobs:
 
   build:
@@ -26,13 +18,7 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - name: Login to docker registry
-      run: >
-        docker login 
-        -u="${{ secrets.DOCKER_USERNAME }}" 
-        -p="${{ secrets.DOCKER_PASSWORD }}" 
-        http://${{ env.REGISTRY }}
-    
+
     - name: Run the Docker image
       run: >
         docker run 
@@ -44,5 +30,5 @@ jobs:
         -e "NUGET_PACKAGES=/root/.nuget/fallbackpackages" 
         -e "NUGET_FALLBACK_PACKAGES=/root/.nuget/fallbackpackages" 
         -p 32985:80 
-        --name TSApi-${{steps.save_timestamp.outputs.timestamp}}
-        ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:${{ inputs.docker_tag }}
+        --name TSApi-${{ github.event.inputs.docker_tag }}
+        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.docker_tag }}
