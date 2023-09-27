@@ -6,6 +6,15 @@ on:
       docker_tag:
         description: 'Select Docker image tag'
         required: true
+        type: choice
+        options:
+        - foo
+        - bar
+        - baz
+      environment:
+        type: environment
+        description: Select the environment
+      
 
 env:
   IMAGE_NAME: cabonline-ts-api
